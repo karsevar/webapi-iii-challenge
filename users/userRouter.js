@@ -19,12 +19,22 @@ router.get('/', (req, res) => {
             res.status(201).json(results)
         })
         .catch(error => {
-            res.status(400).json(error) 
+            res.status(500).json(error) 
         })
 });
 
 router.get('/:id', (req, res) => {
+    const id = req.params.id;
 
+    // console.log(id);
+    userDb.getById(id)
+        .then(results => {
+            console.log('result from getById', results === undefined)
+            res.status(201).json(results) 
+        })
+        .catch(error => {
+            res.status(500).json(error)
+        })
 });
 
 router.get('/:id/posts', (req, res) => {
