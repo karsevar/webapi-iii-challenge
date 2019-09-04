@@ -20,7 +20,9 @@ router.post('/', validateUser, (req, res) => {
 
 router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
     console.log(req.user);
-    postDb.insert(req.user.name, req.body) 
+    const postObject = req.body;
+    postObject.user_id = req.user.id;
+    postDb.insert(postObject) 
         .then(results => {
             res.status(200).json(results)
         })
