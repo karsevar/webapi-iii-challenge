@@ -23,18 +23,8 @@ router.get('/', (req, res) => {
         })
 });
 
-router.get('/:id', (req, res) => {
-    const id = req.params.id;
-
-    // console.log(id);
-    userDb.getById(id)
-        .then(results => {
-            console.log('result from getById', results === undefined)
-            res.status(201).json(results) 
-        })
-        .catch(error => {
-            res.status(500).json(error)
-        })
+router.get('/:id', validateUserId, (req, res) => {
+    res.status(201).json(req.user)
 });
 
 router.get('/:id/posts', (req, res) => {
@@ -52,7 +42,17 @@ router.put('/:id', (req, res) => {
 //custom middleware
 
 function validateUserId(req, res, next) {
+    const userId = req.params.id;
 
+    userDb.getById(userId) 
+        .then(results => {
+            if (results === undefined) {
+                res.status(400).json({ message: "invalid user id" })
+            } else {
+                req.user = results
+                next();
+            }
+        })
 };
 
 function validateUser(req, res, next) {
